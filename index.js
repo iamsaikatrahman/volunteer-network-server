@@ -21,12 +21,20 @@ async function run() {
     await client.connect();
     const database = client.db("volunteerDB");
     const eventCollection = database.collection("events");
+    const usersCollection = database.collection("users");
 
     // GET ALL EVENTS
     app.get("/events", async (req, res) => {
       const cursor = eventCollection.find({});
       const events = await cursor.toArray();
       res.send(events);
+    });
+
+    // SAVE USER BY EMAIL SIGN IN
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const result = await usersCollection.insertOne(user);
+      res.json(result);
     });
   } finally {
     // await client.close();
